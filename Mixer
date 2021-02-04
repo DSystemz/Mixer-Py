@@ -1,0 +1,48 @@
+import sys
+import PySimpleGUI as sg
+import pygame
+import random
+from pytube import YouTube
+import os
+def Cabecao():
+    musics = random.choice(os.listdir('C:\\Users\\BI\\PycharmProjects\\PyData\\sound\\'))
+    pygame.init()
+    musik = pygame.mixer.music.load(musics)
+    pygame.mixer.music.play()
+    volu = pygame.mixer.music.get_volume()
+    sg.theme('Dark')
+    layoutt = [
+        [sg.Button('Anterior'), sg.Button('Pausar'), sg.Button('Próxima'), sg.Button('Sair')],
+        [sg.Button('Vol/+'), sg.Button('Vol/-')],
+        [sg.Text('URL da Música:'), sg.Input(), sg.Button('Pesquisar')],
+        [sg.Text('Música atual: '), sg.Text(musics)]]
+    window = sg.Window('Mixer Py - {}'.format(musics), layout=layoutt, size=(700, 300))
+    event = window.read()
+    if event is None or event == 'Exit':
+        sys.exit()
+    else:
+        button, values = window.read()
+        if button == 'Sair':
+            sys.exit()
+        elif button == 'Pausar':
+            pygame.mixer.music.pause()
+            layoute = [[sg.Text('Você deseja continuar ouvindo a mesma música?')],
+                 [sg.Button('Sim'), sg.Button('Não'), sg.Button('Sair')]]
+            wino = sg.Window('Tocando agora: {}.'.format(musics), layout=layoute, size=(400,100))
+            button, values = wino.read()
+            if button == 'Sim':
+                pygame.mixer.music.unpause()
+            elif button == 'Não':
+                wino.close()
+                pygame.mixer.music.stop()
+                window.close()
+                Cabecao()
+            elif button == 'Sair':
+                sg.Popup('Até a próxima! Volte logo. =l')
+                sys.exit()
+            elif button == 'Pesquisar':
+                sg.popup('yt')
+            else:
+                sg.Popup('Oops! Ocorreu um erro durante o processo.')
+                sys.exit()
+Cabecao()
